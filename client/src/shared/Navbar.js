@@ -21,9 +21,7 @@ const Navbar = () => {
       <li >
         <Link className="active:bg-accent" to="/blog">Blog</Link>
       </li>
-      <li >
-        <Link className="active:bg-accent" to="/portfolio">Portfolio</Link>
-      </li>
+     
     </>
   );
   const profileItems = (
