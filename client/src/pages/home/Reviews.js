@@ -1,23 +1,31 @@
 import React from "react";
+import { useQuery } from "react-query";
 import { EffectCards } from "swiper";
 import "swiper/css";
 import "swiper/css/effect-creative";
 import "swiper/css/grid";
 import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
-import useReviews from "../../hooks/useReviews";
+import { serverUrl } from "../../lib/utils";
+import ErrorCard from "../../shared/ErrorCard";
 import Loader from "../../shared/Loader";
 import "./styles.css";
 
 const Reviews = () => {
- const [reviews] = useReviews();
-  if (reviews.length < 1) {
+  //  const [reviews] = useReviews();
+  const { data: reviews, isLoading, error } = useQuery({
+    queryKey: "reviews",
+    queryFn: () => fetch(`${serverUrl}/review`).then((res) => res.json()),
+  })
+  if (reviews?.length < 1) {
     return (
       <div className="flex items-center justify-center ">
-        <Loader  />
+        <p>No reviews found!</p>
       </div>
     );
   }
+  if (isLoading) return <div className="flex items-center justify-center "> <Loader /></div>
+  if (error) return <ErrorCard />
   return (
     <div>
       <h2 className="text-3xl text-center font-bold mt-24">

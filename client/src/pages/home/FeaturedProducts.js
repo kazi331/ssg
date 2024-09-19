@@ -2,12 +2,12 @@ import { useQuery } from "react-query";
 import { serverUrl } from "../../lib/utils";
 import Loader from "../../shared/Loader";
 import SingleProducts from "./SingleProducts";
+import ErrorCard from "../../shared/ErrorCard";
 
 const FeaturedProducts = () => {
-  const { data: products, isLoading } = useQuery("products", () =>
+  const { data: products, isLoading, error } = useQuery("products", () =>
     fetch(`${serverUrl}/products`).then((res) => res.json())
   );
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center ">
@@ -16,9 +16,8 @@ const FeaturedProducts = () => {
     );
   }
 
-  let emptyMsg;
-  if (products?.length === 0) {
-    emptyMsg = "No products Found ";
+ if (error) {
+    return <ErrorCard />;
   }
 
 
@@ -28,7 +27,7 @@ const FeaturedProducts = () => {
         Featured Products
       </h2>
       <p className="text-dark-200 text-center">Browser Our Top Products</p>
-      <p>{products?.length === 0 && emptyMsg}</p>
+      <p>{products?.length === 0 && "No products Found "}</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 my-12">
         {products?.slice(0, 8).map((p, index) => (
           <SingleProducts key={index} p={p} />

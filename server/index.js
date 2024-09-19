@@ -7,7 +7,7 @@ const port = process.env.PORT || 5000;
 // middlewares
 require("dotenv").config();
 const cors = require("cors");
-app.use(cors().config({
+app.use(cors({
   origin: '*'
 }));
 app.use(express.json());
@@ -16,14 +16,14 @@ app.use(express.json());
 function verifyJWT(req, res, next) {
   const authorize = req.headers.authorization;
   if (!authorize) {
-   return res.status(401).send({ Message: "UnAuthorized Access!!" });
+    return res.status(401).send({ Message: "UnAuthorized Access!!" });
   }
   const token = authorize.split(" ")[1]; // console.log(token);
   // verify a token symmetric
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
     if (err) {
       console.log(err);
-     return res.status(403).send({ Message: "Access Forbidden" });
+      return res.status(403).send({ Message: "Access Forbidden" });
     }
     // console.log(decoded); // bar
     req.decoded = decoded;
@@ -61,20 +61,20 @@ async function run() {
       res.send(result);
     });
     // ADD NEW PRODUCT
-    app.post('/product', async(req, res) => {
+    app.post('/product', async (req, res) => {
       const product = req.body;
       console.log(req.body);
       const result = await productCollection.insertOne(product);
       res.send(result);
     })
-    
+
     // Delete Product 
-    app.delete('/product/:id', async(req, res) => {
+    app.delete('/product/:id', async (req, res) => {
       const id = req.params.id;
-      const result = await productCollection.deleteOne({_id: ObjectId(id)});
+      const result = await productCollection.deleteOne({ _id: ObjectId(id) });
       res.send(result);
     })
-      
+
     // create new order
     app.post("/neworder", async (req, res) => {
       const order = req.body;
@@ -85,8 +85,8 @@ async function run() {
     // get single order with email
     app.get("/my-orders/:email", async (req, res) => {
       const email = req.params.email;
-        const result = await orderCollection.find({ email }).toArray();
-        return res.send(result);
+      const result = await orderCollection.find({ email }).toArray();
+      return res.send(result);
     });
     // get all orders for admin
     app.get("/orders", async (req, res) => {
@@ -135,26 +135,26 @@ async function run() {
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "1d" }
       );
-      res.send({ result, token });  
+      res.send({ result, token });
     });
 
     // update user info 
-    app.put('/update/:email', async(req, res) => {
+    app.put('/update/:email', async (req, res) => {
       const email = req.params.email;
       const updateInfo = req.body;
       console.log(email, updateInfo)
-      const filter = {email: email}
-      const options = {upsert : true}
-      const update = {$set: updateInfo }
+      const filter = { email: email }
+      const options = { upsert: true }
+      const update = { $set: updateInfo }
       const result = await userCollection.updateOne(filter, update, options)
       res.send(result);
     })
 
 
     // get user info 
-    app.get('/user/:email', async(req, res)=> {
+    app.get('/user/:email', async (req, res) => {
       const email = req.params.email;
-      const result = await userCollection.findOne({email: email})
+      const result = await userCollection.findOne({ email: email })
       res.send(result);
     })
 
@@ -163,9 +163,9 @@ async function run() {
       const email = req.params.email;
       console.log(req.params);
       const filter = { email: email };
-      const updateDoc = { $set: {role: 'admin'} };
+      const updateDoc = { $set: { role: 'admin' } };
       const result = await userCollection.updateOne(filter, updateDoc);
-      res.send (result);  
+      res.send(result);
     });
 
     // find all users 
@@ -181,8 +181,8 @@ async function run() {
       res.send(result);
     });
 
-    
-    
+
+
 
 
 
